@@ -1,54 +1,31 @@
 package com.jc;
 
-import java.util.Stack;
+import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
+     private static final Map<Character, Character> PAIRES = Map.of(')', '(', ']', '[', '}', '{');
+
     public static void main(String[] args) {
-//        tester("({[]})");
+        tester("({[]})");
         tester("({[})");
     }
+
     private static void tester(String expression) {
-        boolean resultat = estEquilibrees(expression);
-        System.out.printf("%-20s → %s%n", "\"" + expression + "\"", resultat);
-
-
-    }
-    public static boolean estEquilibrees(String equilibrees) {
-       Stack<Character> pile  = new Stack<Character>();
-
-       for(char c : equilibrees.toCharArray()) {
-           //Si c'est un symbole ouvrant on l'empile
-           if(c =='(' || c == '[' || c == '{'){
-               pile.push(c);
-           }
-           //Si c'est un symbole fermant
-           else if(c ==')' || c ==']' || c =='}') {
-               //Si la pile est vide, pas de correspondance
-               if(pile.empty()) {
-                   return false;
-               }
-
-               char ouvrant = pile.pop();
-
-               //Verifier la correspondance
-               if(!correspondant(ouvrant, c)){
-                   return false;
-               }
-           }
-           //Ignorer les autres caracteres
-       }
-  //La pile doi être vide à la fin
-        return  pile.empty();
-    }
-    /**
-     * Vérifie si un symbole ouvrant correspond au symbole fermant
-     */
-    private static boolean correspondant(char ouvrant, char fermant) {
-        return (ouvrant == '(' && fermant == ')') ||
-                (ouvrant == '[' && fermant == ']') ||
-                (ouvrant == '{' && fermant == '}');
+        System.out.printf("%-20s → %s%n", "\"" + expression + "\"", estEquilibrees(expression));
     }
 
+    public static boolean estEquilibrees(String expression) {
+        Stack<Character> pile = new Stack<>();
+        for (char c : expression.toCharArray()) {
+            if (PAIRES.containsValue(c)) {
+                pile.push(c);
+            } else if (PAIRES.containsKey(c)) {
+                if (pile.empty() || pile.pop() != PAIRES.get(c)) return false;
+            }
+        }
+        return pile.empty();
+    }
 }
